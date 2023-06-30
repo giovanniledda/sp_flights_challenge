@@ -6,10 +6,11 @@ use App\Models\Flight;
 use function array_filter;
 use function collect;
 use function min;
+use function ray;
 
 class FlightScannerService
 {
-    private ?int $minPriceAllowed = null;
+    private ?int $minPriceFound = null;
 
     public function getDirectFlightsByAirportCodes(string $departureCode, string $arrivalCode): mixed
     {
@@ -121,19 +122,19 @@ class FlightScannerService
 
         /** @var Flight $firstFlight */
         foreach ($this->getAllFlightsByDepartureAirportCode(departureCode: $departureCode, arrivalCodesToExclude: [$arrivalCode]) as $firstFlight) {
-            if ($this->countDirectFlightsByAirportCodes(departureCode: $firstFlight->arrival_airport->code, arrivalCode: $arrivalCode)) {
+            if ($this->countDirectFlightsByAirportCodes(departureCode: $firstFlight->to, arrivalCode: $arrivalCode)) {
                 /** @var Flight $secondFlight */
-                foreach ($this->getDirectFlightsByAirportCodes(departureCode: $firstFlight->arrival_airport->code, arrivalCode: $arrivalCode) as $secondFlight) {
+                foreach ($this->getDirectFlightsByAirportCodes(departureCode: $firstFlight->to, arrivalCode: $arrivalCode) as $secondFlight) {
 
-                    if ($this->getMinPriceAllowed() && (($secondFlight->price + $firstFlight->price) > $this->getMinPriceAllowed())) {
-                        return $stopovers;
+                    // I've already found a lower price...there's no reason to check this flight
+                    if ($this->getMinPriceFound() && (($secondFlight->price + $firstFlight->price) >= $this->getMinPriceFound())) {
+                        continue;
                     }
 
                     $stopovers[] = [
                         'price' => $secondFlight->price + $firstFlight->price,
-                        'stopover_codes' => $firstFlight->arrival_airport->code,
+                        'stopover_codes' => $firstFlight->to,
                     ];
-
                 }
             }
         }
@@ -148,20 +149,21 @@ class FlightScannerService
         /** @var Flight $firstFlight */
         foreach ($this->getAllFlightsByDepartureAirportCode(departureCode: $departureCode, arrivalCodesToExclude: [$arrivalCode]) as $firstFlight) {
             /** @var Flight $secondFlight */
-            foreach ($this->getAllFlightsByDepartureAirportCode(departureCode: $firstFlight->arrival_airport->code, arrivalCodesToExclude: [$arrivalCode, $departureCode]) as $secondFlight) {
-                if ($this->countDirectFlightsByAirportCodes(departureCode: $secondFlight->arrival_airport->code, arrivalCode: $arrivalCode)) {
+            foreach ($this->getAllFlightsByDepartureAirportCode(departureCode: $firstFlight->to, arrivalCodesToExclude: [$arrivalCode, $departureCode]) as $secondFlight) {
+                if ($this->countDirectFlightsByAirportCodes(departureCode: $secondFlight->to, arrivalCode: $arrivalCode)) {
                     /** @var Flight $thirdFlight */
-                    foreach ($this->getDirectFlightsByAirportCodes(departureCode: $secondFlight->arrival_airport->code, arrivalCode: $arrivalCode) as $thirdFlight) {
+                    foreach ($this->getDirectFlightsByAirportCodes(departureCode: $secondFlight->to, arrivalCode: $arrivalCode) as $thirdFlight) {
 
-                        if ($this->getMinPriceAllowed() && (($thirdFlight->price + $secondFlight->price + $firstFlight->price) > $this->getMinPriceAllowed())) {
-                            return $stopovers;
+                        // I've already found a lower price...there's no reason to check this flight
+                        if ($this->getMinPriceFound() && (($thirdFlight->price + $secondFlight->price + $firstFlight->price) >= $this->getMinPriceFound())) {
+                            continue;
                         }
 
                         $stopovers[] = [
                             'price' => $thirdFlight->price + $secondFlight->price + $firstFlight->price,
                             'stopover_codes' => [
-                                $firstFlight->arrival_airport->code,
-                                $secondFlight->arrival_airport->code,
+                                $firstFlight->to,
+                                $secondFlight->to,
                             ],
                         ];
                     }
@@ -174,15 +176,17 @@ class FlightScannerService
 
     public function generalMinPriceOptimizedSearch(string $departureCode, string $arrivalCode): ?int
     {
+        $this->resetMinPrice();
+
         $minDirect = $this->getMinPriceForDirectFlightsByAirportCodes($departureCode, $arrivalCode);
 
         // this has no effect on (doesn't stop the) algorithm if result is null
-        $this->setMinPriceAllowed($minDirect);
+        $this->setMinPriceFound($minDirect);
 
         $minSingleStopover = $this->getMinPriceForSingleStopoverFlightsByAirportCodes(departureCode: $departureCode, arrivalCode: $arrivalCode);
 
         // this has no effect on (doesn't stop the) algorithm if result is null
-        $this->setMinPriceAllowed(min(array_filter([$minSingleStopover, $minDirect]) ?: [$minDirect]));
+        $this->setMinPriceFound(min(array_filter([$minSingleStopover, $minDirect]) ?: [$minDirect]));
 
         $minDoubleStopover = $this->getMinPriceForDoubleStopoverFlightsByAirportCodes(departureCode: $departureCode, arrivalCode: $arrivalCode);
 
@@ -191,6 +195,8 @@ class FlightScannerService
 
     public function aggregateDataForApi(string $departureCode, string $arrivalCode)
     {
+        $this->resetMinPrice();
+
         return [
             'data' => [
                 'stopovers' => [
@@ -202,13 +208,18 @@ class FlightScannerService
         ];
     }
 
-    public function getMinPriceAllowed(): ?int
+    public function getMinPriceFound(): ?int
     {
-        return $this->minPriceAllowed;
+        return $this->minPriceFound;
     }
 
-    public function setMinPriceAllowed(?int $minPriceAllowed = null): void
+    public function setMinPriceFound(?int $minPriceFound = null): void
     {
-        $this->minPriceAllowed = $minPriceAllowed;
+        $this->minPriceFound = $minPriceFound;
+    }
+
+    protected function resetMinPrice(): void
+    {
+        $this->minPriceFound = null;
     }
 }

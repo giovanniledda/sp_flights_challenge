@@ -23,7 +23,7 @@
 
             @forelse($flights as $flight)
 
-                <div class="flex items-center mt-2 @if($flight['price'] === $bestPrice) rounded-2xl border-2 border-green-300 space-y-1 text-2xl font-semibold text-orange-500 @endif">
+                <div class="flex items-center mt-2 @if($flight['price'] === $bestPrice) p-2 rounded-2xl border-2 border-green-300 space-y-1 text-2xl font-semibold text-orange-500 @endif">
                     <div class="w-1/3">
                         price: <span class="font-semibold text-yellow-400">{{ $flight['price'] }}</span>
                     </div>

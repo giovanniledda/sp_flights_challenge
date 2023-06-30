@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Airport;
+use Database\Seeders\Utils;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
@@ -56,7 +57,7 @@ class FlightTest extends TestCase
     public function flights_list_will_be_ordered_by_price_and_grouped_by_stopovers()
     {
 
-        $flightsData = $this->generateStaticGenericFlightsWithRandomPrice(5, 10);
+        $flightsData = Utils::generateStaticGenericFlightsWithRandomPrice(5, 10);
 
         $this->createAirportsAndFlightsFactories($flightsData);
 

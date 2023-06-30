@@ -24,9 +24,9 @@ class FlightController extends Controller
 
         $arrivalCode = $request->get('arrCode');
 
-        $flightsData = $flightScanner->aggregateDataForApi($departureCode, $arrivalCode);
-
         $bestPrice = $flightScanner->generalMinPriceOptimizedSearch($departureCode, $arrivalCode);
+
+        $flightsData = $flightScanner->aggregateDataForApi($departureCode, $arrivalCode);
 
         return response()->view('flights.search-results', compact('flightsData', 'departureCode', 'arrivalCode', 'bestPrice'));
     }

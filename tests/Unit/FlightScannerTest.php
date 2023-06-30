@@ -3,8 +3,10 @@
 namespace Tests\Unit;
 
 use App\Services\FlightScannerService;
+use Database\Seeders\Utils;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use function collect;
 
 final class FlightScannerTest extends TestCase
 {
@@ -17,7 +19,7 @@ final class FlightScannerTest extends TestCase
     {
         $service = new FlightScannerService();
 
-        $flightsData = $this->generateStaticDirectFlights(5, 3);
+        $flightsData = Utils::generateStaticDirectFlights(5, 3);
 
         $this->createAirportsAndFlightsFactories($flightsData);
 
@@ -34,7 +36,7 @@ final class FlightScannerTest extends TestCase
     {
         $service = new FlightScannerService();
 
-        $flightsData = $this->generateStaticSingleStopoverFlights(5, 3);
+        $flightsData = Utils::generateStaticSingleStopoverFlights(5, 3);
 
         $this->createAirportsAndFlightsFactories($flightsData);
 
@@ -55,7 +57,7 @@ final class FlightScannerTest extends TestCase
     {
         $service = new FlightScannerService();
 
-        $flightsData = $this->generateStaticDoubleStopoverFlights(5, 3);
+        $flightsData = Utils::generateStaticDoubleStopoverFlights(5, 3);
 
         $this->createAirportsAndFlightsFactories($flightsData);
 
@@ -96,7 +98,7 @@ final class FlightScannerTest extends TestCase
     {
         $service = new FlightScannerService();
 
-        $flightsData = $this->generateStaticGenericFlightsWithRandomPrice(5, 10);
+        $flightsData = Utils::generateStaticGenericFlightsWithRandomPrice(5, 10);
 
         $this->createAirportsAndFlightsFactories($flightsData);
 
@@ -110,7 +112,7 @@ final class FlightScannerTest extends TestCase
     {
         $service = new FlightScannerService();
 
-        $flightsData = $this->generateStaticGenericFlightsWithRandomPrice(10);
+        $flightsData = Utils::generateStaticGenericFlightsWithRandomPrice(10);
 
         // best price is in a direct flight: AAA -> BBB: price 1
         $flightsData[] = [
@@ -131,7 +133,7 @@ final class FlightScannerTest extends TestCase
     {
         $service = new FlightScannerService();
 
-        $flightsData = $this->generateStaticGenericFlightsWithRandomPrice(10);
+        $flightsData = Utils::generateStaticGenericFlightsWithRandomPrice(10);
 
         // best price is in a single stopover flight: AAA -> CCC -> BBB: price 2
 
@@ -159,7 +161,7 @@ final class FlightScannerTest extends TestCase
     {
         $service = new FlightScannerService();
 
-        $flightsData = $this->generateStaticGenericFlightsWithRandomPrice(10);
+        $flightsData = Utils::generateStaticGenericFlightsWithRandomPrice(10);
 
         // best price is in a single stopover flight: AAA -> CCC -> DDD -> BBB: price 3
 
@@ -184,6 +186,31 @@ final class FlightScannerTest extends TestCase
         $this->createAirportsAndFlightsFactories($flightsData);
 
         $this->assertEquals(3, $service->generalMinPriceOptimizedSearch('AAA', 'BBB'));
+    }
+
+
+    /**
+     * @test
+     */
+    public function it_gets_min_over_all_flights_with_random_data()
+    {
+        $service = new FlightScannerService();
+
+        $flightsData = Utils::generateGenericFlightsWithRandomPrice(100);
+
+        $this->createAirportsAndFlightsFactories($flightsData);
+
+        $departureCode = 'BBB';
+
+        $arrivalCode = 'BBB';
+
+        $minDirect = collect($service->getDirectFlightsByAirportCodesStructured($departureCode, $arrivalCode))->min('price');
+
+        $minSingle = collect($service->getSingleStopoverFlightsByAirportCodesStructured($departureCode, $arrivalCode))->min('price');
+
+        $minDouble = collect($service->getDoubleStopoverFlightsByAirportCodesStructured($departureCode, $arrivalCode))->min('price');
+
+        $this->assertEquals(min($minDirect, $minSingle, $minDouble), $service->generalMinPriceOptimizedSearch($departureCode, $arrivalCode));
     }
 
 }

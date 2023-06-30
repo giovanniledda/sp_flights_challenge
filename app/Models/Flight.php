@@ -24,6 +24,20 @@ class Flight extends Model
         );
     }
 
+    protected function to(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->arrival_airport->code,
+        );
+    }
+
+    protected function from(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->departure_airport->code,
+        );
+    }
+
     public function departure_airport(): BelongsTo
     {
         return $this->belongsTo(Airport::class, 'code_departure', 'code');
