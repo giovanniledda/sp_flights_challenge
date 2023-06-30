@@ -8,13 +8,14 @@
                 <span class="text-2xl">
                     Flights from <span class="font-bold text-white">{{ $departureCode }}</span> to <span class="font-bold text-white">{{ $arrivalCode }}</span>
                 </span>
-
             </p>
-            <p>
-                <span class="text-4xl">
-                    Best price: <span class="text-2xl font-semibold text-pink-500">{{ $bestPrice }} &euro;</span>
-                </span>
-            </p>
+            @if($bestPrice)
+                <p>
+                    <span class="text-4xl">
+                        Best price: <span class="text-2xl font-semibold text-pink-500">{{ $bestPrice }} &euro;</span>
+                    </span>
+                </p>
+            @endif
         </div>
 
 

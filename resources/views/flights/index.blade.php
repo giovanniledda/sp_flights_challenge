@@ -16,7 +16,7 @@
                             <select id="depCode" name="depCode" required class="w-full p-2 rounded border border-gray-300 bg-gray-700 text-gray-300 mb-4">
                                 <option value="">Select Departure Code</option>
                                 @foreach ($airportCodes as $code)
-                                    <option value="{{ $code }}">{{ $code }}</option>
+                                    <option @if(old('depCode') === $code) selected @endif value="{{ $code }}">{{ $code }}</option>
                                 @endforeach
                             </select>
                             @error('depCode')
@@ -27,7 +27,7 @@
                             <select id="arrCode" name="arrCode" required class="w-full p-2 rounded border border-gray-300 bg-gray-700 text-gray-300 mb-4">
                                 <option value="">Select Arrival Code</option>
                                 @foreach ($airportCodes as $code)
-                                    <option value="{{ $code }}">{{ $code }}</option>
+                                    <option @if(old('arrCode') === $code) selected @endif value="{{ $code }}">{{ $code }}</option>
                                 @endforeach
                             </select>
                             @error('arrCode')
