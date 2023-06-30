@@ -126,15 +126,21 @@ class FlightScannerService
                 /** @var Flight $secondFlight */
                 foreach ($this->getDirectFlightsByAirportCodes(departureCode: $firstFlight->to, arrivalCode: $arrivalCode) as $secondFlight) {
 
-                    // I've already found a lower price...there's no reason to check this flight
-                    if ($this->getMinPriceFound() && (($secondFlight->price + $firstFlight->price) >= $this->getMinPriceFound())) {
-                        continue;
+                    $newPrice = $secondFlight->price + $firstFlight->price;
+
+                    // I've already found a lower price...there's no reason to check this flight solutions
+                    if ($this->getMinPriceFound() && ($newPrice >= $this->getMinPriceFound())) {
+                        break;
                     }
 
                     $stopovers[] = [
-                        'price' => $secondFlight->price + $firstFlight->price,
+                        'price' => $newPrice,
                         'stopover_codes' => $firstFlight->to,
                     ];
+
+                    if ($this->getMinPriceFound()) {
+                        $this->setMinPriceFound($newPrice);
+                    }
                 }
             }
         }
@@ -155,17 +161,23 @@ class FlightScannerService
                     foreach ($this->getDirectFlightsByAirportCodes(departureCode: $secondFlight->to, arrivalCode: $arrivalCode) as $thirdFlight) {
 
                         // I've already found a lower price...there's no reason to check this flight
-                        if ($this->getMinPriceFound() && (($thirdFlight->price + $secondFlight->price + $firstFlight->price) >= $this->getMinPriceFound())) {
-                            continue;
+                        $newPrice = $thirdFlight->price + $secondFlight->price + $firstFlight->price;
+
+                        if ($this->getMinPriceFound() && ($newPrice >= $this->getMinPriceFound())) {
+                            break;
                         }
 
                         $stopovers[] = [
-                            'price' => $thirdFlight->price + $secondFlight->price + $firstFlight->price,
+                            'price' => $newPrice,
                             'stopover_codes' => [
                                 $firstFlight->to,
                                 $secondFlight->to,
                             ],
                         ];
+
+                        if ($this->getMinPriceFound()) {
+                            $this->setMinPriceFound($newPrice);
+                        }
                     }
                 }
             }
