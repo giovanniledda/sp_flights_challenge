@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $price
+ * @property string $from
+ * @property string $to
  */
 class Flight extends Model
 {

@@ -6,8 +6,8 @@ use App\Models\Airport;
 use Database\Seeders\Utils;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Tests\TestCase;
 use function ray;
+use Tests\TestCase;
 
 class FlightTest extends TestCase
 {

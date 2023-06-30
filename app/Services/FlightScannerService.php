@@ -6,7 +6,6 @@ use App\Models\Flight;
 use function array_filter;
 use function collect;
 use function min;
-use function ray;
 
 class FlightScannerService
 {

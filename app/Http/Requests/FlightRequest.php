@@ -17,7 +17,7 @@ class FlightRequest extends FormRequest
     public function messages()
     {
         return [
-          'depCode:exists' => 'The departure code must belong to a real airport'
+            'depCode:exists' => 'The departure code must belong to a real airport',
         ];
     }
 

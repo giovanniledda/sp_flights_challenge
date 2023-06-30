@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Support\Arr;
 use function fake;
 use function floor;
+use Illuminate\Support\Arr;
 use function mt_rand;
 
 // FIXME: code is not DRY, but I need it this way in order to have clearer test
@@ -71,57 +71,57 @@ final class Utils
         return $result;
     }
 
-  public static function generateStaticGenericFlightsWithRandomPrice(int $totalFlights, ?int $priceParam = null): array
-  {
+    public static function generateStaticGenericFlightsWithRandomPrice(int $totalFlights, ?int $priceParam = null): array
+    {
 
-    $result = [];
+        $result = [];
 
-    for ($i = 0; $i < $totalFlights; $i++) {
+        for ($i = 0; $i < $totalFlights; $i++) {
 
-      $price = $priceParam ?: mt_rand(50, 200);
+            $price = $priceParam ?: mt_rand(50, 200);
 
-      // Generate direct flights
-      $result[] = [
-      'dep' => 'AAA',
-      'arr' => 'BBB',
-      'price' => $price,
-      ];
+            // Generate direct flights
+            $result[] = [
+                'dep' => 'AAA',
+                'arr' => 'BBB',
+                'price' => $price,
+            ];
 
-      // one step-over  AAA -> CCC -> BBB, price * 2
-      $result[] = [
-      'dep' => 'AAA',
-      'arr' => 'CCC',
-      'price' => floor($price / 2),
-      ];
+            // one step-over  AAA -> CCC -> BBB, price * 2
+            $result[] = [
+                'dep' => 'AAA',
+                'arr' => 'CCC',
+                'price' => floor($price / 2),
+            ];
 
-      $result[] = [
-      'dep' => 'CCC',
-      'arr' => 'BBB',
-      'price' => floor($price / 2),
-      ];
+            $result[] = [
+                'dep' => 'CCC',
+                'arr' => 'BBB',
+                'price' => floor($price / 2),
+            ];
 
-      // two step-over  AAA -> DDD -> CCC -> BBB, price * 3
-      $result[] = [
-      'dep' => 'AAA',
-      'arr' => 'DDD',
-      'price' => floor($price / 3),
-      ];
+            // two step-over  AAA -> DDD -> CCC -> BBB, price * 3
+            $result[] = [
+                'dep' => 'AAA',
+                'arr' => 'DDD',
+                'price' => floor($price / 3),
+            ];
 
-      $result[] = [
-      'dep' => 'DDD',
-      'arr' => 'CCC',
-      'price' => floor($price / 3),
-      ];
+            $result[] = [
+                'dep' => 'DDD',
+                'arr' => 'CCC',
+                'price' => floor($price / 3),
+            ];
 
-      $result[] = [
-      'dep' => 'CCC',
-      'arr' => 'BBB',
-      'price' => floor($price / 3),
-      ];
+            $result[] = [
+                'dep' => 'CCC',
+                'arr' => 'BBB',
+                'price' => floor($price / 3),
+            ];
+        }
+
+        return $result;
     }
-
-    return $result;
-  }
 
     public static function generateStaticDoubleStopoverFlights(int $totalFlights, ?int $priceParam = null): array
     {

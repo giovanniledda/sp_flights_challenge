@@ -3,10 +3,10 @@
 namespace Tests\Unit;
 
 use App\Services\FlightScannerService;
+use function collect;
 use Database\Seeders\Utils;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use function collect;
 
 final class FlightScannerTest extends TestCase
 {
@@ -188,7 +188,6 @@ final class FlightScannerTest extends TestCase
         $this->assertEquals(3, $service->generalMinPriceOptimizedSearch('AAA', 'BBB'));
     }
 
-
     /**
      * @test
      */
@@ -212,5 +211,4 @@ final class FlightScannerTest extends TestCase
 
         $this->assertEquals(min($minDirect, $minSingle, $minDouble), $service->generalMinPriceOptimizedSearch($departureCode, $arrivalCode));
     }
-
 }
