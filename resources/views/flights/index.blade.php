@@ -3,10 +3,9 @@
 @section('content')
 
     <div class="max-w-7xl mx-auto p-6 lg:p-8">
-
         <div class="mt-16">
             <div class="">
-                <a class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
+                <div class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
                     <div class="flex flex-col items-center">
 
                         <form method="GET" action="{{ route('flights.search') }}">
@@ -35,10 +34,10 @@
                             <div class="text-red-500 text-xs">{{ $message }}</div>
                             @enderror
 
-                            <button type="submit" class="bg-green-500 hover:bg-green-200 focus:outline-none text-white py-2 px-4 rounded mt-4">Submit</button>
+                            <button type="submit" style="background-color: green" class="bg-green-500 hover:bg-green-200 focus:outline-none text-white py-2 px-4 rounded mt-4">Submit</button>
                         </form>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
 
