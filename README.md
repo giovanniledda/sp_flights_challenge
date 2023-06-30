@@ -52,7 +52,7 @@ stopovers!
 The result is represented in a Blade Landing Page.
 
 
-- [Visit Flights homepage](https://laravel.com/docs/routing).
+- [Visit Flights Search homepage](http://127.0.0.1:8000/flights).
 
 ## The Solution
 

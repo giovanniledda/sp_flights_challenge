@@ -4,9 +4,17 @@
 
     <div class="w-2/5 mx-auto p-6 lg:p-8 bg-gray-900 text-white">
         <div class="my-4">
-            Flights from <span class="font-bold text-white">{{ $departureCode }}</span> to <span class="font-bold text-white">{{ $arrivalCode }}</span>
-            <br />
-            Best price: <span class="text-2xl font-semibold text-pink-500">{{ $bestPrice }}</span>
+            <p>
+                <span class="text-2xl">
+                    Flights from <span class="font-bold text-white">{{ $departureCode }}</span> to <span class="font-bold text-white">{{ $arrivalCode }}</span>
+                </span>
+
+            </p>
+            <p>
+                <span class="text-4xl">
+                    Best price: <span class="text-2xl font-semibold text-pink-500">{{ $bestPrice }} &euro;</span>
+                </span>
+            </p>
         </div>
 
 
@@ -25,11 +33,13 @@
 
                 <div class="flex items-center mt-2 @if($flight['price'] === $bestPrice) p-2 rounded-2xl border-2 border-green-300 space-y-1 text-2xl font-semibold text-orange-500 @endif">
                     <div class="w-1/3">
-                        price: <span class="font-semibold text-yellow-400">{{ $flight['price'] }}</span>
+                        price: <span class="font-semibold text-yellow-400">{{ $flight['price'] }} &euro;</span>
                     </div>
                     <div class="w-2/3">
                         @if(!is_null($flight['stopover_codes']))
-                            via: {{ is_array($flight['stopover_codes']) ? implode(', ', $flight['stopover_codes']) : $flight['stopover_codes'] }},
+                            via: {{ is_array($flight['stopover_codes']) ?
+                              implode(', ', $flight['stopover_codes']) :
+                              $flight['stopover_codes'] }}
                         @else
                             Direct flight.
                         @endif
